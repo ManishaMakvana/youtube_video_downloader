@@ -1,0 +1,96 @@
+==========================================
+📥 YouTube Video Downloader - Step-by-Step
+==========================================
+
+✅ STEP 1: Download and Install FFmpeg
+------------------------------------------
+1. Go to: https://ffmpeg.org/download.html
+2. Under "Windows", choose: https://www.gyan.dev/ffmpeg/builds/
+3. Download the "Essentials build" ZIP file.
+4. Extract the ZIP file.
+5. Move the extracted folder to:
+   C:\ffmpeg
+
+Your path should look like:
+   C:\ffmpeg\bin\ffmpeg.exe
+
+✅ STEP 2: Add FFmpeg to System PATH
+------------------------------------------
+1. Press Windows + S → Search: Environment Variables
+2. Click: "Edit the system environment variables"
+3. In the new window, click: Environment Variables
+4. Under "System Variables", find "Path", and click "Edit"
+5. Click "New" → Add:
+   C:\ffmpeg\bin
+6. Click OK on all windows.
+
+✅ STEP 3: Verify FFmpeg Installation
+------------------------------------------
+Open Command Prompt (CMD) and type:
+   ffmpeg -version
+
+If successful, you’ll see FFmpeg version details.
+
+✅ STEP 4: Install yt-dlp
+------------------------------------------
+In CMD or PowerShell, run:
+   pip install yt-dlp
+
+✅ STEP 5: Prepare YouTube Links
+------------------------------------------
+1. Create a text file with YouTube video URLs.
+2. Save it as:
+   C:/Users/Manisha/Desktop/youtube/songs.txt
+
+✅ STEP 6: Python Script to Download Videos
+------------------------------------------
+Create a Python file: youtube_downloader.py
+Paste the following code inside:
+
+----------------------------------------------------
+import os
+import subprocess
+
+# Path to your text file
+text_file = "C:/Users/Manisha/Desktop/youtube/songs.txt"
+
+# Folder name based on text file
+folder_name = os.path.splitext(os.path.basename(text_file))[0]
+download_folder = os.path.join(os.getcwd(), folder_name)
+
+# Create folder if it doesn't exist
+os.makedirs(download_folder, exist_ok=True)
+
+# Read all links
+with open(text_file, "r", encoding="utf-8") as f:
+    urls = [line.strip() for line in f if line.strip().startswith("http")]
+
+print(f"📁 Downloading to: {download_folder}")
+print(f"🔗 Found {len(urls)} videos\n")
+
+# Download each video
+for i, url in enumerate(urls, 1):
+    print(f"{i}. Downloading: {url}")
+    try:
+        subprocess.run([
+            "yt-dlp",
+            "--ffmpeg-location", "C:/ffmpeg/bin",
+            "-f", "bestvideo+bestaudio",
+            "--merge-output-format", "mp4",
+            "-o", os.path.join(download_folder, "%(title)s.%(ext)s"),
+            url
+        ], check=True)
+        print("   ✅ Downloaded\n")
+    except subprocess.CalledProcessError as e:
+        print("   ❌ Download failed:", e)
+----------------------------------------------------
+
+✅ STEP 7: Run the Script
+------------------------------------------
+1. Open CMD where the script is saved.
+2. Run:
+   python youtube_downloader.py
+
+That’s it! 🎉 Your videos will be saved in a new folder.
+
+==========================================
